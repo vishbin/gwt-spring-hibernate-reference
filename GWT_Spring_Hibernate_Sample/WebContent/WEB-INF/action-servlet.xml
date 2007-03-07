@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+	<bean id="defaultHandlerMapping" class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"/>
+
+	<bean name="/classificationService"
+			class="org.gwtspringhibernate.reference.rlogman.spring.GwtServiceExporter">
+		<property name="service" ref="classificationService"/>
+		<property name="serviceInterface" value="org.gwtspringhibernate.reference.rlogman.client.service.EntityService"/>
+	</bean>
+</beans>

@@ -1,0 +1,8 @@
+<module>
+
+	<!-- Inherit the core Web Toolkit stuff.                  -->
+	<inherits name='com.google.gwt.user.User'/>
+
+	<!-- Specify the app entry point class.                   -->
+	<entry-point class='org.gwtspringhibernate.reference.rlogman.client.GWT_Spring_Hibernate_Sample'/>
+</module>

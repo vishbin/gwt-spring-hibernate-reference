@@ -1,0 +1,1 @@
+@java -cp "%~dp0\gwt_src;%~dp0\server_src;C:/gwt/gwt-user.jar;C:/gwt/gwt-dev-windows.jar" com.google.gwt.dev.GWTCompiler -out "%~dp0\WebContent" %* org.gwtspringhibernate.reference.rlogman.GWT_Spring_Hibernate_Sample
