@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cache-entry>
+	<generated-type-hash class="org.gwtspringhibernate.reference.rlogman.client.service.EntityService_Proxy" hash="767870E6F1A785005A4A939C40627318"/>
+	<generated-type-hash class="org.gwtspringhibernate.reference.rlogman.client.service.EntityService_TypeSerializer" hash="9C14D6B827B57BF25E47A6C1FA512069"/>
+	<generated-type-hash class="com.google.gwt.user.client.rpc.SerializableException_FieldSerializer" hash="1CB9B63ABEC9BE7E663F6C56AA395208"/>
+	<generated-type-hash class="org.gwtspringhibernate.reference.rlogman.client.data.Classification_FieldSerializer" hash="BB46480C48B06A23F28F9D6DF30AEE71"/>
+	<rebind-decision in="org.gwtspringhibernate.reference.rlogman.client.GWT_Spring_Hibernate_Sample" out="org.gwtspringhibernate.reference.rlogman.client.GWT_Spring_Hibernate_Sample"/>
+	<rebind-decision in="com.google.gwt.user.client.ui.impl.TextBoxImpl" out="com.google.gwt.user.client.ui.impl.TextBoxImpl"/>
+	<rebind-decision in="org.gwtspringhibernate.reference.rlogman.client.service.EntityService" out="org.gwtspringhibernate.reference.rlogman.client.service.EntityService_Proxy"/>
+	<rebind-decision in="com.google.gwt.user.client.ui.impl.FormPanelImpl" out="com.google.gwt.user.client.ui.impl.FormPanelImpl"/>
+	<rebind-decision in="com.google.gwt.user.client.impl.HistoryImpl" out="com.google.gwt.user.client.impl.HistoryImplStandard"/>
+	<rebind-decision in="com.google.gwt.user.client.impl.HTTPRequestImpl" out="com.google.gwt.user.client.impl.HTTPRequestImpl"/>
+	<rebind-decision in="com.google.gwt.user.client.impl.DOMImpl" out="com.google.gwt.user.client.impl.DOMImplMozilla"/>
+	<rebind-decision in="com.google.gwt.user.client.ui.impl.PopupImpl" out="com.google.gwt.user.client.ui.impl.PopupImpl"/>
+</cache-entry>

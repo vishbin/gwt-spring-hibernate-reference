@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+  <bean id="bizwatchDS" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+    <property name="driverClassName"><value>oracle.jdbc.driver.OracleDriver</value></property>
+    <property name="url"><value>jdbc:oracle:thin:@localhost:1521:xe</value></property>
+    <property name="username"><value>yourUser</value></property>
+    <property name="password"><value>yourPassword</value></property>
+  </bean>
+</beans>
