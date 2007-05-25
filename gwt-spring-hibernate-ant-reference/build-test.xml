@@ -1,0 +1,199 @@
+<?xml version="1.0" ?>
+<project name="poc-test" basedir="." default="junit">
+
+	<property file="build.properties"/>
+	<exec executable="hostname" outputproperty="hostname">
+		<arg value="-s"/>
+	</exec>
+	<property file="${env.dir}/user/${user.name}.${hostname}.properties"/>
+	<property file="${env.dir}/${environment}.properties"/>
+	<property file="${env.dir}/default.properties"/>
+	
+	<property name="test.resources.dir" value="${conf.dir}/testresources" />
+	<property name="lib.test.dir" value="lib/test" />
+	
+	<property name="test.gen.dir" value="${build.dir}/test/gen" />
+	<property name="report.dir" value="${build.dir}/reports" />
+	<property name="junit.dir" value="${report.dir}/junit" />
+	<property name="report.merge.dir" value="${report.dir}/merge" />
+	<property name="report.artifacts.dir" value="${report.dir}/artifacts" />
+	<property name="test.writable.conf.dir" value="${build.dir}/test/conf" />
+
+	<path id="compile.classpath">
+        <pathelement location="${classes.dir}"/>
+		<fileset dir="${dist.lib.dir}">
+			<include name="*binding.jar" />
+		</fileset>
+		<fileset dir="${lib.dir}">
+			<include name="*.jar" />
+		</fileset>
+		<fileset dir="${lib.compile.dir}">
+			<include name="*.jar" />
+		</fileset>
+		<fileset dir="${lib.test.dir}">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+	
+	<path id="runtime.classpath">
+		<fileset dir="${lib.dir}">
+			<include name="*.jar" />
+		</fileset>
+		<fileset dir="${lib.runtime.dir}">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+    <path id="junit.classpath">
+    	<pathelement location="${test.instrumented.classes.dir}"/>
+        <pathelement location="${test.classes.dir}"/>
+        <pathelement location="${test.gen.dir}"/>
+        <pathelement location="${test.resources.dir}"/>
+        <pathelement location="${conf.gen.dir}"/>
+        <pathelement location="${resources.dir}" />
+        <fileset dir="${lib.runtime.dir}">
+            <include name="*.jar"/>
+        </fileset>
+        <path refid="compile.classpath"/>
+    </path>
+
+	<target name="init" description="Initializes the test environment">
+		<tstamp>
+			<format property="timestamp" pattern="yyyyMMddHHmmss" />
+		</tstamp>
+		<mkdir dir="${test.classes.dir}" />
+		<mkdir dir="${test.gen.dir}" />
+		<mkdir dir="${report.dir}" />
+		<mkdir dir="${junit.dir}" />
+		<mkdir dir="${report.merge.dir}" />
+		<mkdir dir="${report.artifacts.dir}" />
+		<mkdir dir="${test.writable.conf.dir}" />
+	</target>
+
+	<target name="merge-templates" depends="init" description="Merges user/environment properties with templates to create usable test resources">
+		<filter filtersfile="${env.dir}/default.properties"/>
+		<filter filtersfile="${env.dir}/${environment}.properties"/>
+		<filter filtersfile="${env.dir}/user/${user.name}.${hostname}.properties"/>
+		<filter filtersfile="${env.dir}/test/test.properties" />
+		<copy todir="${test.gen.dir}" filtering="true" overwrite="true">
+			<fileset dir="${resources.dir}">
+				<include name="**/*_template*" />
+			</fileset>
+			<mapper type="regexp" from="^(.*)_template(.*)" to="\1\2" />
+		</copy>
+		<copy todir="${test.gen.dir}" filtering="true" overwrite="true">
+			<fileset dir="www/console/WEB-INF">
+				<include name="**/applicationContext*.xml" />
+				<include name="**/hibernate*.xml" />
+			</fileset>
+			<mapper type="regexp" from="^(.*)_template(.*)" to="\1\2" />
+		</copy>
+		<copy todir="${test.gen.dir}" overwrite="true">
+			<fileset dir="www/console/WEB-INF">
+				<include name="**/applicationContext*.xml" />
+				<exclude name="**/*_template*"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="compile" depends="init" description="Compiles the tests">
+		<javac srcdir="${src.test.dir}" destdir="${test.classes.dir}" source="1.5" encoding="iso8859-1" deprecation="true" debug="true" nowarn="true">
+			<classpath>
+				<path refid="compile.classpath" />
+				<pathelement location="${classes.dir}" />
+			</classpath>
+		</javac>
+	</target>
+	
+	<target name="instrument"
+		depends="compile"
+		description="Instruments the compiled classes with unit test coverage hooks">
+		<mkdir dir="${test.instrumented.classes.dir}"/>
+		<taskdef resource="tasks.properties">
+			<classpath>
+				<fileset dir="${lib.compile.dir}">
+					<include name="cobertura-*.jar"/>
+				</fileset>
+				<path refid="compile.classpath"/>
+				<path refid="runtime.classpath"/>
+			</classpath>
+		</taskdef>
+		<cobertura-instrument 
+			classpathref="compile.classpath" 
+			todir="${test.instrumented.classes.dir}">
+			<fileset dir="${classes.dir}">
+				<include name="**/*.class"/>
+			</fileset>
+		</cobertura-instrument>
+	</target>
+
+	<target name="run-junit" depends="instrument" description="Runs the junit tests">
+		<junit haltonerror="false" failureproperty="junit.failure" 
+			fork="on" forkmode="perBatch" showoutput="true">
+			<jvmarg value="-Xms512m"/>
+			<jvmarg value="-Xmx1024m"/>
+			<classpath refid="junit.classpath"/>
+			<batchtest todir="${junit.dir}">
+				<fileset dir="${src.test.dir}">
+					<include name="**/*Fixture.java"/>
+				</fileset>
+			</batchtest>
+			<formatter type="xml"/>
+			<formatter type="plain"/>
+		</junit>
+	</target>
+	
+	<target name="junit-coverage" description="Generates a test code coverage report">
+		<taskdef resource="tasks.properties">
+			<classpath>
+				<fileset dir="${lib.compile.dir}">
+					<include name="cobertura-*.jar"/>
+				</fileset>
+				<path refid="compile.classpath"/>
+				<path refid="runtime.classpath"/>
+			</classpath>
+		</taskdef>
+		<cobertura-report 
+			format="html" 
+			srcdir="${src.java.dir}" 
+			destdir="${report.artifacts.dir}/coverage"/>
+	</target>
+
+	<target name="junit-report"
+			description="Generates a JUnit report quantifying the test successes/failures">
+		<junitreport todir="${report.merge.dir}" tofile="junit.xml">
+			<fileset dir="${junit.dir}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" 
+				todir="${report.artifacts.dir}/junit"/>
+		</junitreport>
+	</target>
+
+    <target name="check-failure"
+    		description="Fails if any target or task has set a failure property">
+        <fail>
+            <condition>
+                <isset property="junit.failure"/>
+            </condition>
+        </fail>
+    </target>
+	
+	<target name="junit" depends="run-junit, junit-report, junit-coverage, check-failure">
+	</target>
+
+	<target name="checkstyle"
+		description="Checks the style of the CVX test code based on RAF coding standards">
+		<taskdef resource="checkstyletask.properties" classpathref="compile.classpath"/>
+		<checkstyle failonviolation="false" config="${conf.build.dir}/proto-checkstyle.xml">
+			<classpath refid="compile.classpath"/>
+			<fileset dir="${src.java.dir}">
+				<include name="**/*.java"/>
+			</fileset>
+			<fileset dir="${src.test.dir}">
+				<include name="**/*.java"/>
+			</fileset>
+			<formatter type="xml" toFile="${report.merge.dir}/checkstyle.xml"/>
+		</checkstyle>
+	</target>
+</project>
