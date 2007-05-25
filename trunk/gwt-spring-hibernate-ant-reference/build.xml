@@ -1,0 +1,324 @@
+<?xml version="1.0"?>
+<project name="proto" default="compile">
+	<description>
+		Prototype GWT + Spring + Hibernate Application
+	</description>
+	<property name="name" value="proto" />
+	
+	<property file="build.properties"/>
+	<exec executable="hostname" outputproperty="hostname">
+		<arg value="-s"/>
+	</exec>
+	<property name="gwt.dir" value="/opt/gwt"/> <!-- TODO: remove line -->
+	<property file="${env.dir}/user/${user.name}.${hostname}.properties"/>
+	<property file="${env.dir}/${environment}.properties"/>
+	<property file="${env.dir}/default.properties"/>
+
+	<property name="scratch.dir" value="${build.dir}/scratch" />
+
+	<path id="compile.classpath">
+		<fileset dir="${lib.dir}">
+			<include name="*.jar"/>
+		</fileset>
+		<fileset dir="${lib.compile.dir}">
+			<include name="*.jar"/>
+		</fileset>
+		<fileset dir="${gwt.dir}">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+	
+	<path id="runtime.classpath">
+		<fileset dir="${lib.dir}">
+			<include name="*.jar" />
+		</fileset>
+		<fileset dir="${lib.runtime.dir}">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+	
+	<path id="sqlgen.classpath">
+		<fileset dir="${dist.lib.dir}">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<target name="init" description="Prepares the build environment">
+		<tstamp>
+			<format property="timestamp" pattern="yyyyMMddHHmmss" />
+		</tstamp>
+		<mkdir dir="${classes.dir}"/>
+		<mkdir dir="${conf.gen.dir}"/>
+		<mkdir dir="${dist.conf.dir}"/>
+		<mkdir dir="${dist.lib.dir}"/>
+		<mkdir dir="${gen.dir}/console"/>
+	</target>
+
+	<target name="clean" 
+		description="Cleans the build environment">
+		<delete dir="${console.exploded.dir}" quiet="true"/>
+		<delete dir="${build.dir}" quiet="true"/>
+		<delete dir=".gwt-cache" quiet="true"/>
+		<delete file="cobertura.ser" quiet="true"/>
+	</target>
+	
+	<target name="compile" 
+			depends="init" 
+			description="Compiles the source code">
+		<javac destdir="${classes.dir}"
+				source="1.5"
+				encoding="iso8859-1"
+				deprecation="true"
+				debug="true" nowarn="true"
+				classpathref="compile.classpath">
+			<src path="${src.java.dir}"/>
+		</javac>
+		<taskdef resource="dk/contix/ant/gwt/ant-gwt.xml">
+			<classpath>
+				<path refid="compile.classpath"/>
+				<dirset dir="${src.java.dir}"/>
+			</classpath>
+		</taskdef>
+		<gwtcompile destdir="${gen.dir}/console" optimize="true">
+			<fileset dir="${src.java.dir}">
+				<include name="**/*.gwt.xml"/>
+			</fileset>
+		</gwtcompile>
+		<ant antfile="build-test.xml" target="compile" />
+	</target>
+	
+	<target name="merge-templates" depends="init"
+		description="Merges user/environment properties with templates to create usable resources">
+		<filter filtersfile="${env.dir}/default.properties"/>
+		<filter filtersfile="${env.dir}/${environment}.properties"/>
+		<filter filtersfile="${env.dir}/user/${user.name}.${hostname}.properties"/>
+		<copy todir="${conf.gen.dir}" filtering="true" overwrite="true">
+			<fileset dir="${resources.dir}">
+				<include name="**/*_template*"/>
+			</fileset>
+			<mapper type="regexp" from="^(.*)_template(.*)" to="\1\2"/>
+		</copy>
+		<copy todir="${gen.dir}/console/WEB-INF" filtering="true" overwrite="true">
+			<fileset dir="${console.dir}/WEB-INF">
+				<include name="**/*_template*"/>
+			</fileset>
+			<mapper type="regexp" from="^(.*)_template(.*)" to="\1\2"/>
+		</copy>
+		<ant antfile="build-test.xml" target="merge-templates" />
+	</target>
+	
+	<target name="config" depends="merge-templates"
+			description="Generates configuration based on templates.">
+		<copy file="${conf.gen.dir}/log4j.properties" todir="${dist.conf.dir}" />
+	</target>
+	
+	<target name="jar" depends="compile, config"
+			description="Builds the jar file for all source in this project.">
+		<mkdir dir="${lib.gen.dir}"/>
+		<jar destfile="${lib.gen.dir}/${name}.jar">
+			<fileset dir="${classes.dir}">
+				<include name="**/*.*"/>
+				<exclude name="**/console/**/*"/>
+			</fileset>
+		</jar>
+	</target>
+	
+	<fileset id="webdoclet.console.src" dir="${src.java.dir}">
+		<include name="com/mycompany/proto/console/*.java" />
+	</fileset>
+
+	<target name="webdoclet-console" description="Generates Console web files using XDoclet">
+		<taskdef name="webdoclet" classname="xdoclet.modules.web.WebDocletTask" classpathref="compile.classpath"/>
+		<webdoclet destDir="${gen.dir}/console/WEB-INF" mergeDir="${merge.dir}/web_xml">
+			<fileset refid="webdoclet.console.src" />
+			<deploymentdescriptor servletspec="2.4" />
+		</webdoclet>
+	</target>
+
+	<target name="dist" depends="merge-templates, compile, jar" 
+			description="Packages the application for distribution">
+		<copy todir="${dist.conf.dir}">
+			<fileset dir="${resources.dir}">
+				<include name="com/**/*.properties" />
+				<include name="**/*.xml" />
+				<exclude name="**/*_template.*" />
+				<exclude name="console/**/*.*"/>
+			</fileset>
+			<fileset dir="${conf.gen.dir}"/>
+		</copy>
+		<copy todir="${dist.lib.dir}">
+			<fileset dir="${lib.dir}">
+				<include name="*.jar"/>
+			</fileset>
+			<fileset dir="${lib.runtime.dir}">
+				<exclude name="mysql-connector-java-3.1.13-bin.jar"/>
+			</fileset>
+		</copy>
+		<zip file="${build.dir}/${name}.zip">
+			<fileset dir="${dist.dir}"/>
+		</zip>
+	</target>
+	
+	<target name="populate-test-data" depends="deploy-test-files"
+			description="Populates test data into the system">
+		<sql classpathref="runtime.classpath"
+			driver="${jdbc.driver.class}" 
+			userid="poc"
+			password="${jdbc.connection.password}" 
+			url="${jdbc.connection.url}">
+			<fileset dir="${src.sql.dir}">
+				<include name="00-poc-ddl.sql"/>
+				<include name="05-poc-indexes.sql"/>
+				<include name="insert-test-*.sql"/>
+			</fileset>
+		</sql>
+	</target>
+	
+	<target name="deploy-test-files"
+			description="Deploys test files so they are available to the test system">
+		<copy todir="${documents.dir}">
+			<fileset dir="${conf.dir}/testresources/documents">
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+		<copy todir="${lucene.index.dir}">
+			<fileset dir="${conf.dir}/testresources/indexes">
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+	</target>
+	
+	
+	<fileset id="webdoclet.console.src" dir="${src.java.dir}">
+		<include name="com/mycompany/proto/console/*.java" />
+	</fileset>
+
+	<target name="war.exploded" depends="merge-templates, webdoclet-console, compile, jar" description="Builds the exploded web applciation">
+		<mkdir dir="${console.exploded.dir}"/>
+		<mkdir dir="${console.exploded.dir}/WEB-INF"/>
+		<copy todir="${console.exploded.dir}">
+			<fileset dir="${console.dir}">
+				<include name="**/*" />
+				<exclude name="**/*_template*"/>
+			</fileset>
+		</copy>
+		<copy todir="${console.exploded.dir}/WEB-INF">
+			<fileset dir="${gen.dir}/console">
+				<include name="web.xml" />
+			</fileset>
+		</copy>
+		<copy todir="${console.exploded.dir}/WEB-INF/tld">
+			<fileset dir="${conf.dir}/tld">
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+		<copy todir="${console.exploded.dir}/WEB-INF/classes">
+			<fileset dir="${classes.dir}">
+				<include name="com/mycompany/proto/console/**/*" />
+			</fileset>
+		</copy>
+		<copy todir="${console.exploded.dir}/WEB-INF/classes">
+			<fileset dir="${resources.dir}">
+				<include name="**/*.xml" />
+				<exclude name="**/*_template.*" />
+			</fileset>
+			<fileset dir="${conf.gen.dir}"/>
+		</copy>
+		<copy todir="${console.exploded.dir}/WEB-INF/lib">
+			<fileset dir="${lib.dir}">
+				<include name="*.jar"/>
+			</fileset>
+			<fileset dir="${lib.runtime.dir}">
+				<include name="*.jar"/>
+			</fileset>
+			<fileset dir="${lib.gen.dir}">
+				<include name="${name}.jar"/>
+			</fileset>
+		</copy>
+		<copy todir="${console.exploded.dir}">
+			<fileset dir="${gen.dir}/console">
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+		<touch file="${console.exploded.dir}/WEB-INF/web.xml"/>
+	</target>
+	
+	<target name="junit"
+		depends="war.exploded"
+		description="Runs JUnit Tests (Delegates to build-test.xml)">
+		<ant antfile="build-test.xml" target="junit"/>
+	</target>
+	
+	<target name="war" depends="merge-templates, webdoclet-console, compile, jar"
+			description="Builds the WAR file">
+		<war destfile="${build.dir}/${name}.war" basedir="${console.exploded.dir}" webxml="${gen.dir}/console/WEB-INF/web.xml">
+			<exclude name="WEB-INF/web.xml"/>
+		</war>
+	</target>
+	
+	<target name="deploy" depends="war" 
+			description="Deploys the application.">
+		<copy todir="${war.deploy.dir}" file="${build.dir}/${name}.war"/>
+	</target>
+	
+	<target name="deploy.exploded" depends="war.exploded"
+			description="Deploys the application in an 'exploded' form (no WAR)">
+		<copy todir="${war.deploy.dir}/${name}">
+			<fileset dir="web/console">
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="redeploy-web-files" 
+			description="Redeploy the web files at runtime into exploded WAR directory">
+		<copy todir="${war.deploy.dir}/poc">
+			<fileset dir="web/console">
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="schema-export" depends="merge-templates, jar"
+		description="Exports Hibernate mapping to DDL SQL script">
+		<mkdir dir="${sql.gen.dir}"/>
+		<mkdir dir="${test.db.dir}"/>
+		<taskdef name="hibernatetool" 
+		         classname="org.hibernate.tool.ant.HibernateToolTask" 
+		         classpathref="compile.classpath" />
+		<hibernatetool>
+			<classpath>
+				<path refid="compile.classpath"/>
+				<path refid="runtime.classpath"/>
+				<filelist dir="${dist.lib.dir}">
+					<file name="${name}.jar"/>
+				</filelist>
+			</classpath>
+			<annotationconfiguration configurationfile="${conf.gen.dir}/hibernate.cfg.xml"/>
+			<!-- Doesn't seem to work with H2-->
+			<hbm2ddl destdir="${sql.gen.dir}"/>
+		</hibernatetool>
+	</target>
+	
+	<target name="javadoc" depends="compile"
+		description="Creates Javadoc API documentation">
+		<mkdir dir="${javadoc.dir}"/>
+		<!-- Broken! -->
+		<javadoc 
+			packagenames="com.mycompany.*"
+			sourcepath="${src.java.dir}" 
+			defaultexcludes="yes"
+			destdir="${javadoc.dir}"
+			author="true"
+			version="true"
+			windowtitle="Prototype API">
+          	<doctitle><![CDATA[<h1>Test</h1>]]></doctitle>
+		    <bottom><![CDATA[<i>Copyright &#169; 2007 My Company, Inc. All Rights Reserved.</i>]]></bottom>
+		    <tag name="todo" scope="all" description="To do:"/>
+			<link offline="true" href="http://java.sun.com/j2se/1.5.0/docs/api/" packagelistLoc="/tmp"/>
+			<link offline="true" href="http://www.hibernate.org/hib_docs/v3/api/" packagelistLoc="/tmp"/>
+		</javadoc>
+	</target>
+	
+</project>
+

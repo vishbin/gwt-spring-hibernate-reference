@@ -1,0 +1,4 @@
+<servlet-mapping>
+	<servlet-name>action</servlet-name>
+	<url-pattern>/com.mycompany.proto.console.hello.HelloModule/service/*</url-pattern>
+</servlet-mapping>

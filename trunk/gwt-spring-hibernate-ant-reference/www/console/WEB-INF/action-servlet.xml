@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+	<bean id="defaultHandlerMapping" class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"/>
+
+	<bean name="/helloService"
+			class="com.mycompany.proto.spring.GwtServiceExporter">
+		<property name="service" ref="helloService"/>
+		<property name="serviceInterface" value="com.mycompany.proto.console.hello.client.HelloService"/>
+	</bean>
+</beans>

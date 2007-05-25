@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+"http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<bean id="hibernateProperties"
+		class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="properties">
+			<props>
+				<prop key="hibernate.cache.use_second_level_cache">@hibernate.cache.use_second_level_cache@</prop>
+				<prop key="hibernate.cache.use_query_cache">@hibernate.cache.use_query_cache@</prop>
+				<prop key="hibernate.cache.provider_class">@hibernate.cache.provider_class@</prop>
+				<prop key="hibernate.transaction.factory_class">@hibernate.transaction.factory_class@</prop>
+				<prop key="hibernate.query.factory_class">@hibernate.query.factory_class@</prop>
+				<prop key="hibernate.dialect">@hibernate.dialect@</prop>
+				<prop key="hibernate.show_sql">@hibernate.show_sql@</prop>
+				<prop key="hibernate.cglib.use_reflection_optimizer">@hibernate.cglib.use_reflection_optimizer@</prop>
+				<prop key="hibernate.use_outer_join">@hibernate.use_outer_join@</prop>
+				<prop key="hibernate.hbm2ddl.auto">@hibernate.hbm2ddl.auto@</prop>
+				<prop key="hibernate.connection.driver_class">@jdbc.driver.class@</prop>
+				<prop key="hibernate.connection.url">@jdbc.connection.url@</prop>
+				<prop key="hibernate.connection.username">@jdbc.connection.username@</prop>
+				<prop key="hibernate.connection.password">@jdbc.connection.password@</prop>
+				<prop key="hibernate.connection.pool_size">@jdbc.connection.poolsize@</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource"><ref bean="protoDS"/></property>
+		<property name="configLocation"><value>@hibernate.cfg.path@hibernate.cfg.xml</value></property>
+		<property name="configurationClass"><value>org.hibernate.cfg.AnnotationConfiguration</value></property>
+		<property name="hibernateProperties"><ref bean="hibernateProperties"/></property>
+	</bean>
+	
+	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory"><ref bean="sessionFactory"/></property>
+	</bean>
+	
+	<bean id="txAttributeSource"
+			class="org.springframework.transaction.interceptor.NameMatchTransactionAttributeSource">
+		<property name="properties">
+			<props>
+				<prop key="add*">PROPAGATION_REQUIRED</prop>
+				<prop key="update*">PROPAGATION_REQUIRED</prop>
+				<prop key="remove*">PROPAGATION_REQUIRED</prop>
+				<prop key="send*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="txInterceptor" class="org.springframework.transaction.interceptor.TransactionInterceptor">
+		<property name="transactionManager"><ref local="transactionManager"/></property>
+		<property name="transactionAttributeSource"><ref local="txAttributeSource"/></property>
+	</bean>
+	
+	<bean id="autoProxyCreator" class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+		<property name="interceptorNames">
+			<list>
+				<value>txInterceptor</value>
+			</list>
+		</property>
+		<property name="beanNames">
+			<list>
+				<value>*Dao</value>
+				<value>*DAO</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="customerDao" class="com.mycompany.proto.domain.dao.CustomerDaoImpl">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory"/>
+		</property>
+	</bean>
+</beans>
