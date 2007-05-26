@@ -11,57 +11,63 @@ import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class HelloModule implements EntryPoint {
 	
-	private Button createJohnButton = new Button("Click me");
-	private Label createJohnLabel = new Label();
+	private Button createCustomerButton = new Button("Create Customer");
+	private Label statusLabel = new Label();
 	private Button refreshButton = new Button("Refresh");
 	private FlexTable customersTable = new FlexTable();
-
+	private TextBox firstNameTextBox = new TextBox();
+	private TextBox lastNameTextBox = new TextBox();
+	
 	public void onModuleLoad() {
-		
+		firstNameTextBox.setTitle("First Name");
+		firstNameTextBox.setName("firstName");
+		lastNameTextBox.setTitle("Last Name");
+		lastNameTextBox.setName("lastName");
 
-		createJohnButton.addClickListener(new ClickListener() {
+		createCustomerButton.addClickListener(new ClickListener() {
 			public void onClick(Widget sender) {
-				dearJohn();
-				showJohns();
+				createCustomer();
+				showCustomers();
 			}
 		});
 		
 		refreshButton.addClickListener(new ClickListener() {
 			public void onClick(Widget sender) {
-				showJohns();
+				showCustomers();
 			}
 		});
 
-		RootPanel.get("helloButton").add(createJohnButton);
-		RootPanel.get("helloOutput").add(createJohnLabel);
+		RootPanel.get("helloButton").add(createCustomerButton);
+		RootPanel.get("helloOutput").add(statusLabel);
 		RootPanel.get("customersRefreshButton").add(refreshButton);
 		RootPanel.get("customersTable").add(customersTable);
+		RootPanel.get("firstNameTF").add(firstNameTextBox);
+		RootPanel.get("lastNameTF").add(lastNameTextBox);
 	}
 	
-	private void dearJohn() {
-		createJohnButton.setEnabled(false);
-		HelloServiceAsync instance = HelloService.Util.getInstance();
-		instance.sayHello(new AsyncCallback() {
-
-			public void onFailure(Throwable error) {
-				Window.alert("Error occured:" + error.toString());
-				createJohnButton.setEnabled(true);
+	private void createCustomer() {
+		createCustomerButton.setEnabled(false);
+		CustomerServiceAsync instance = CustomerService.Util.getInstance();
+		instance.createCustomer(firstNameTextBox.getText(), lastNameTextBox.getText(), new AsyncCallback() {
+			public void onFailure(Throwable caught) {
+				Window.alert("Error occured:" + caught.toString());
+				createCustomerButton.setEnabled(true);
 			}
-
-			public void onSuccess(Object value) {
-				createJohnLabel.setText(value.toString());
-				createJohnButton.setEnabled(true);
+			public void onSuccess(Object result) {
+				statusLabel.setText("Success!");
+				createCustomerButton.setEnabled(true);
 			}
 		});
 	}
 	
-	private void showJohns() {
+	private void showCustomers() {
 		refreshButton.setEnabled(false);
-		HelloServiceAsync instance = HelloService.Util.getInstance();
+		CustomerServiceAsync instance = CustomerService.Util.getInstance();
 		instance.getCustomers(new AsyncCallback() {
 
 			public void onFailure(Throwable error) {
@@ -86,11 +92,47 @@ public class HelloModule implements EntryPoint {
 		table.setHTML(++rows, 0, "ID");
 		table.setHTML(rows, 1, "First Name");
 		table.setHTML(rows, 2, "Last Name");
+		table.setHTML(rows, 3, "Delete?");
 		for (Iterator iter = customers.iterator(); iter.hasNext();) {
 			CustomerInterface customer = (CustomerInterface) iter.next();
 			table.setHTML(++rows, 0, customer.getId().toString());
 			table.setHTML(rows, 1, customer.getFirstName());
 			table.setHTML(rows, 2, customer.getLastName());
+			table.setWidget(rows, 3, new CustomerDeleteButton(customer));
+		}
+	}
+	
+	private class CustomerDeleteButton extends Button {
+		
+		private CustomerInterface customer; 
+
+		public CustomerDeleteButton(CustomerInterface customer) {
+			super("Delete");
+			this.customer = customer;
+			addClickListener(createClickListener());
+		}
+
+		private ClickListener createClickListener() {
+			return new ClickListener() {
+				public void onClick(Widget sender) {
+					handleClick();
+				}
+			};
+		}
+		
+		private void handleClick() {
+			setEnabled(false);
+			CustomerServiceAsync instance = CustomerService.Util.getInstance();
+			instance.deleteCustomer(customer.getId(), new AsyncCallback() {
+				public void onFailure(Throwable caught) {
+					Window.alert("Error occured:" + caught.toString());
+					setEnabled(true);
+				}
+
+				public void onSuccess(Object result) {
+					setText("Deleted!");
+				}
+			});
 		}
 	}
 }

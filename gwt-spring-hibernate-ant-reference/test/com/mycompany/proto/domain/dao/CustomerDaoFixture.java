@@ -21,16 +21,45 @@ public class CustomerDaoFixture {
 	}
 	
 	@Test
-	public void save() {
+	public void saveAndFind() {
 		Customer c = new Customer();
 		c.setFirstName("John");
 		c.setLastName("Doe");
 		dao.save(c);
 		
-		List<Customer> customers = dao.getAllCustomers();
-		assertEquals(1, customers.size());
-		Customer found = customers.get(0);
+		Customer found = dao.find(c.getId());
+		assertNotNull(found);
 		assertEquals("John", found.getFirstName());
 		assertEquals("Doe", found.getLastName());
+	}
+	
+	@Test
+	public void getAllCustomers() {
+		Customer c1 = new Customer();
+		c1.setFirstName("John");
+		c1.setLastName("Doe");
+		dao.save(c1);
+		
+		Customer c2 = new Customer();
+		c2.setFirstName("Jane");
+		c2.setLastName("Doe");
+		dao.save(c2);
+		
+		List<Customer> customers = dao.getAllCustomers();
+		assertEquals(2, customers.size());
+	}
+	
+	@Test
+	public void delete() {
+		Customer c = new Customer();
+		c.setFirstName("John");
+		c.setLastName("Doe");
+		dao.save(c);
+		
+		Customer found = dao.find(c.getId());
+		assertNotNull(found);
+		dao.delete(found.getId());
+		Customer deleted = dao.find(c.getId());
+		assertNull(deleted);
 	}
 }

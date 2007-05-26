@@ -8,9 +8,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.apache.commons.lang.builder.CompareToBuilder;
+
 @Entity
 @Table(name = "customers")
-public class Customer implements Serializable {
+public class Customer implements Serializable, Comparable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id @GeneratedValue
@@ -22,6 +24,13 @@ public class Customer implements Serializable {
 	
 	@Column(name = "first_name")
 	private String firstName;
+	
+	public Customer() { }
+	
+	public Customer(String firstName, String lastName) {
+		setFirstName(firstName);
+		setLastName(lastName);
+	}
 
 	public Long getId() {
 		return id;
@@ -45,5 +54,28 @@ public class Customer implements Serializable {
 	
 	public String toString() {
 		return "[" + id + "," + lastName + "," + firstName + "]";
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public int hashCode() {
+		return id.hashCode();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean equals(Object other) {
+		Customer that = (Customer) other;
+		return this.id == that.id;
+	}
+
+	public int compareTo(Customer that) {
+		return CompareToBuilder.reflectionCompare(this, that);
+	}
+
+	public int compareTo(Object other) {
+		return compareTo((Customer)other);
 	}
 }
