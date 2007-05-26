@@ -6,4 +6,5 @@
 
 	<!-- Specify the app entry point class.                   -->
 	<entry-point class="com.mycompany.proto.console.hello.client.HelloModule"/>
+	<source path="client"/>
 </module>
