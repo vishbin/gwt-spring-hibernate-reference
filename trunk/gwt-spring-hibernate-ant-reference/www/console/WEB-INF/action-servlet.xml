@@ -9,4 +9,10 @@
 		<property name="service" ref="helloService"/>
 		<property name="serviceInterface" value="com.mycompany.proto.console.hello.client.HelloService"/>
 	</bean>
+	
+	<bean name="/customerService"
+			class="com.mycompany.proto.spring.GwtServiceExporter">
+		<property name="service" ref="customerService"/>
+		<property name="serviceInterface" value="com.mycompany.proto.console.hello.client.CustomerService"/>
+	</bean>
 </beans>

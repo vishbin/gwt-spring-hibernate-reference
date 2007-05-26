@@ -9,4 +9,6 @@ public interface CustomerDao {
 	void save(Customer customer);
 	List<Customer> getAllCustomers();
 	void deleteAll();
+	void delete(Long customerId);
+	Customer find(Long customerId);
 }
