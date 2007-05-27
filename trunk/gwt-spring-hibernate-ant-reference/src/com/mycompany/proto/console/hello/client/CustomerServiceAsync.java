@@ -6,5 +6,5 @@ public interface CustomerServiceAsync {
 
 	void getCustomers(AsyncCallback callback);
 	void createCustomer(String firstName, String lastName, AsyncCallback callback);
-	void deleteCustomer(Long customerId, AsyncCallback callback);
+	void deleteCustomer(CustomerAdaptor customer, AsyncCallback callback);
 }

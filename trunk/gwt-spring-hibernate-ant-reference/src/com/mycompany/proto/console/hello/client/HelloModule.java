@@ -19,7 +19,6 @@ public class HelloModule implements EntryPoint {
 	private Button createCustomerButton = new Button("Create Customer");
 	private Label statusLabel = new Label();
 	private Button refreshButton = new Button("Refresh");
-	private FlexTable customersTable = new FlexTable();
 	private TextBox firstNameTextBox = new TextBox();
 	private TextBox lastNameTextBox = new TextBox();
 	
@@ -45,7 +44,6 @@ public class HelloModule implements EntryPoint {
 		RootPanel.get("helloButton").add(createCustomerButton);
 		RootPanel.get("helloOutput").add(statusLabel);
 		RootPanel.get("customersRefreshButton").add(refreshButton);
-		RootPanel.get("customersTable").add(customersTable);
 		RootPanel.get("firstNameTF").add(firstNameTextBox);
 		RootPanel.get("lastNameTF").add(lastNameTextBox);
 	}
@@ -77,7 +75,7 @@ public class HelloModule implements EntryPoint {
 
 			public void onSuccess(Object value) {
 				try {
-					updateCustomersTable(customersTable, (List)value);
+					rebuildCustomersTable((List)value);
 				} catch (Exception e) {
 					Window.alert("Error occured:" + e.getMessage());
 				}
@@ -86,27 +84,29 @@ public class HelloModule implements EntryPoint {
 		});
 	}
 	
-	private void updateCustomersTable(FlexTable table, List customers) {
-		table.clear();
+	private void rebuildCustomersTable(List customers) {
+		RootPanel.get("customersTable").clear();
+		FlexTable table = new FlexTable();
 		int rows = -1;
 		table.setHTML(++rows, 0, "ID");
 		table.setHTML(rows, 1, "First Name");
 		table.setHTML(rows, 2, "Last Name");
 		table.setHTML(rows, 3, "Delete?");
 		for (Iterator iter = customers.iterator(); iter.hasNext();) {
-			CustomerInterface customer = (CustomerInterface) iter.next();
+			CustomerAdaptor customer = (CustomerAdaptor) iter.next();
 			table.setHTML(++rows, 0, customer.getId().toString());
 			table.setHTML(rows, 1, customer.getFirstName());
 			table.setHTML(rows, 2, customer.getLastName());
 			table.setWidget(rows, 3, new CustomerDeleteButton(customer));
 		}
+		RootPanel.get("customersTable").add(table);
 	}
 	
 	private class CustomerDeleteButton extends Button {
 		
-		private CustomerInterface customer; 
+		private CustomerAdaptor customer; 
 
-		public CustomerDeleteButton(CustomerInterface customer) {
+		public CustomerDeleteButton(CustomerAdaptor customer) {
 			super("Delete");
 			this.customer = customer;
 			addClickListener(createClickListener());
@@ -123,7 +123,7 @@ public class HelloModule implements EntryPoint {
 		private void handleClick() {
 			setEnabled(false);
 			CustomerServiceAsync instance = CustomerService.Util.getInstance();
-			instance.deleteCustomer(customer.getId(), new AsyncCallback() {
+			instance.deleteCustomer(customer, new AsyncCallback() {
 				public void onFailure(Throwable caught) {
 					Window.alert("Error occured:" + caught.toString());
 					setEnabled(true);

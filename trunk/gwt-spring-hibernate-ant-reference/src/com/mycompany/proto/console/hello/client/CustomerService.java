@@ -12,7 +12,7 @@ public interface CustomerService extends RemoteService {
 	
 	List getCustomers() throws Exception;
 	CustomerInterface createCustomer(String firstName, String lastName);
-	void deleteCustomer(Long customerId);
+	void deleteCustomer(CustomerAdaptor customer);
 
 	public static class Util {
 

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mappings PUBLIC "-//DOZER//DTD MAPPINGS//EN"
+   "http://dozer.sourceforge.net/dtd/dozerbeanmapping.dtd">
+<mappings>
+  <configuration>
+    <stop-on-errors>true</stop-on-errors>
+    <date-format>MM/dd/yyyy HH:mm</date-format>
+    <wildcard>true</wildcard>
+  </configuration>
+
+  <mapping>
+    <class-a>com.mycompany.proto.domain.Customer</class-a>
+    <class-b>com.mycompany.proto.console.hello.client.CustomerAdaptor</class-b>
+  </mapping> 
+</mappings>
