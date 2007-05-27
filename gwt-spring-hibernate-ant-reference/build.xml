@@ -9,7 +9,6 @@
 	<exec executable="hostname" outputproperty="hostname">
 		<arg value="-s"/>
 	</exec>
-	<property name="gwt.dir" value="/opt/gwt"/> <!-- TODO: remove line -->
 	<property file="${env.dir}/user/${user.name}.${hostname}.properties"/>
 	<property file="${env.dir}/${environment}.properties"/>
 	<property file="${env.dir}/default.properties"/>
@@ -250,7 +249,7 @@
 		<ant antfile="build-test.xml" target="junit"/>
 	</target>
 	
-	<target name="war" depends="merge-templates, webdoclet-console, compile, jar"
+	<target name="war" depends="war.exploded"
 			description="Builds the WAR file">
 		<war destfile="${build.dir}/${name}.war" basedir="${console.exploded.dir}" webxml="${gen.dir}/console/WEB-INF/web.xml">
 			<exclude name="WEB-INF/web.xml"/>
