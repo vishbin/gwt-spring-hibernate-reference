@@ -9,6 +9,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.KeyboardListener;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -27,6 +28,7 @@ public class HelloModule implements EntryPoint {
 		firstNameTextBox.setName("firstName");
 		lastNameTextBox.setTitle("Last Name");
 		lastNameTextBox.setName("lastName");
+		lastNameTextBox.addKeyboardListener(createCreateCustomerEnterListener());
 
 		createCustomerButton.addClickListener(new ClickListener() {
 			public void onClick(Widget sender) {
@@ -46,8 +48,22 @@ public class HelloModule implements EntryPoint {
 		RootPanel.get("customersRefreshButton").add(refreshButton);
 		RootPanel.get("firstNameTF").add(firstNameTextBox);
 		RootPanel.get("lastNameTF").add(lastNameTextBox);
+		
+		showCustomers();
 	}
 	
+	private KeyboardListener createCreateCustomerEnterListener() {
+		return new KeyboardListener() {
+			public void onKeyDown(Widget sender, char keyCode, int modifiers) { }
+			public void onKeyPress(Widget sender, char keyCode, int modifiers) {
+				if ((keyCode == 13) && (modifiers == 0)) {
+					createCustomer();
+				}
+			}
+			public void onKeyUp(Widget sender, char keyCode, int modifiers) { }
+		};
+	}
+
 	private void createCustomer() {
 		createCustomerButton.setEnabled(false);
 		CustomerServiceAsync instance = CustomerService.Util.getInstance();
@@ -59,6 +75,7 @@ public class HelloModule implements EntryPoint {
 			public void onSuccess(Object result) {
 				statusLabel.setText("Success!");
 				createCustomerButton.setEnabled(true);
+				showCustomers();
 			}
 		});
 	}
