@@ -41,8 +41,8 @@ public class HelloModule implements EntryPoint {
 			}
 		});
 
-		RootPanel.get("helloButton").add(createCustomerButton);
-		RootPanel.get("helloOutput").add(statusLabel);
+		RootPanel.get("createCustomerButton").add(createCustomerButton);
+		RootPanel.get("status").add(statusLabel);
 		RootPanel.get("customersRefreshButton").add(refreshButton);
 		RootPanel.get("firstNameTF").add(firstNameTextBox);
 		RootPanel.get("lastNameTF").add(lastNameTextBox);

@@ -1,32 +1,20 @@
 <html>
 	<head>
-		<title>Wrapper HTML for HelloModule</title>
-		<style>
-			body,td,a,div,.p{font-family:arial,sans-serif}
-			div,td{color:#000000}
-			a:link,.w,.w a:link{color:#0000cc}
-			a:visited{color:#551a8b}
-			a:active{color:#ff0000}
-		</style>
+		<title>Prototype GWT|Spring|Hibernate|Ant Web Application</title>
 		<meta name='gwt:module' content='com.mycompany.proto.console.hello.HelloModule'>
 	</head>
 	<body>
 		<script language="javascript" src="gwt.js"></script>
 		<iframe id="__gwt_historyFrame" style="width:0;height:0;border:0"></iframe>
-
-		<table align=center>
-			<tr>
-				<td id="firstNameTF"></td>
-				<td id="lastNameTF"></td>
-			</tr>
-			<tr>
-				<td id="helloButton" colspan="2"></td>
-			</tr>
-			<tr>
-				<td id="helloOutput" colspan="2"></td>
-			</tr>
-		</table>
-		<div id="customersTable"></div>
-		<div id="customersRefreshButton"></div>
+		<div>
+			First Name:<span id="firstNameTF"></span>
+			Last Name:<span id="lastNameTF"></span>
+			<br/>
+			<span id="createCustomerButton"></span>
+			<br/>
+			<span id="status"></span>
+		</div>
+		<div id="customersRefreshButton"/>
+		<div id="customersTable"/>
 	</body>
 </html>
