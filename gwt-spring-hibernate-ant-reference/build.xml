@@ -239,7 +239,7 @@
 	
 	<target name="war" depends="war.exploded"
 			description="Builds the WAR file">
-		<war destfile="${build.dir}/${name}.war" basedir="${console.exploded.dir}" webxml="${gen.dir}/console/WEB-INF/web.xml">
+		<war destfile="${build.dir}/${name}.war" basedir="${console.exploded.dir}" webxml="${console.dir}/WEB-INF/web.xml">
 			<exclude name="WEB-INF/web.xml"/>
 		</war>
 	</target>
