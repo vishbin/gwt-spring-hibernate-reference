@@ -1,8 +1,0 @@
-<mime-mapping>
-	<extension>css</extension>
-	<mime-type>text/css</mime-type>
-</mime-mapping>
-<mime-mapping>
-	<extension>js</extension>
-	<mime-type>application/x-javascript</mime-type>
-</mime-mapping>
