@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-modules id="moduleCoreId" project-version="1.5.0">
-<wb-module deploy-name="poc">
-<wb-resource deploy-path="/" source-path="/www"/>
-<wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
-<wb-resource deploy-path="/" source-path="/build/gwtOutput/com.mycompany.proto.console.hello.HelloModule"/>
-<wb-resource deploy-path="/WEB-INF/classes" source-path="/conf/resources"/>
-<wb-resource deploy-path="/WEB-INF/classes" source-path="/test"/>
-<wb-resource deploy-path="/WEB-INF/classes" source-path="/build/test/gen"/>
-<property name="context-root" value="poc"/>
-<property name="java-output-path" value="build/classes"/>
-</wb-module>
+	<wb-module deploy-name="poc">
+		<wb-resource deploy-path="/" source-path="/www/console"/>
+		<wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
+		<wb-resource deploy-path="/WEB-INF/classes" source-path="/conf/resources"/>
+		<wb-resource deploy-path="/WEB-INF/classes" source-path="/build/gen/conf"/>
+		<wb-resource deploy-path="/" source-path="/build/gen/console"/>
+		<property name="java-output-path" value="build/classes"/>
+		<property name="context-root" value="poc"/>
+	</wb-module>
 </project-modules>
