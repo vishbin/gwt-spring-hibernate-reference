@@ -7,13 +7,13 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 
 public interface CustomerService extends RemoteService {
-
+	
 	public static final String SERVICE_URI = "service/customerService";
 	
 	List getCustomers() throws Exception;
 	CustomerInterface createCustomer(String firstName, String lastName);
 	void deleteCustomer(CustomerAdaptor customer);
-
+	
 	public static class Util {
 
 		public static CustomerServiceAsync getInstance() {

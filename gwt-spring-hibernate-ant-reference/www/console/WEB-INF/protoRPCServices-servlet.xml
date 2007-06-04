@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+	<bean id="urlMapping" class="org.gwtwidgets.server.spring.GWTHandler">
+		<property name="mapping">
+			<map>
+				<entry key="/customerService" value-ref="customerService" />
+				<entry key="/helloService" value-ref="helloService" />
+			</map>
+		</property>
+	</bean>
+</beans>

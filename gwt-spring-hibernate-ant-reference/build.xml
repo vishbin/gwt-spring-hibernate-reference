@@ -123,6 +123,18 @@
 		</jar>
 	</target>
 
+	<fileset id="webdoclet.console.src" dir="${src.java.dir}">
+		<include name="com/mycompany/proto/console/*.java" />
+	</fileset>
+
+	<target name="webdoclet-console" description="Generates Console web files using XDoclet">
+		<taskdef name="webdoclet" classname="xdoclet.modules.web.WebDocletTask" classpathref="compile.classpath"/>
+		<webdoclet destDir="${gen.dir}/console/WEB-INF" mergeDir="${merge.dir}/web_xml">
+			<fileset refid="webdoclet.console.src" />
+			<deploymentdescriptor servletspec="2.4" />
+		</webdoclet>
+	</target>
+
 	<target name="dist" depends="merge-templates, compile, jar" 
 			description="Packages the application for distribution">
 		<copy todir="${dist.conf.dir}">
