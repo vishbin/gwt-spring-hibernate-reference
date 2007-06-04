@@ -4,5 +4,5 @@
 	<bean id="customerMapper" class="com.mycompany.proto.console.hello.server.service.CustomerMapper" autowire="autodetect"/>
 
 	<bean id="helloService" class="com.mycompany.proto.console.hello.server.service.HelloServiceImpl" autowire="autodetect"/>
-	<bean id="customerService"  class="com.mycompany.proto.console.hello.server.service.CustomerServiceImpl" autowire="autodetect"/>
+	<bean id="customerService" class="com.mycompany.proto.console.hello.server.service.CustomerServiceImpl" autowire="autodetect"/>
 </beans>
