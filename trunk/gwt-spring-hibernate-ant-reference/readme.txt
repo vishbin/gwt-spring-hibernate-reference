@@ -7,13 +7,15 @@ components:
    generates coverage reports, genrates DDL, etc)
 2) Eclipse pre-configured project (Googlipse integration currently 
    broken)
-3) GWT support (with Spring IoC for server-side components)
+3) GWT support (with Spring IoC for server-side components using
+   GWT Server Library - http://gwt-widget.sourceforge.net )
 4) Spring Inversion of Control for all components
 5) Hibernate ORM (using JDK 1.5 annotations)
-6) JUnit unit tests (using JDK 1.5 annotated classes, DAO code tested
+6) Dozer Bean Mapper (maps Server-side domain objects to client-side beans)
+7) JUnit unit tests (using JDK 1.5 annotated classes, DAO code tested
    against H2 DB)
-7) Cobertura unit test code coverage & reporting
-8) Log4J Logging (plus a logging facade that makes dropping logging 
+8) Cobertura unit test code coverage & reporting
+9) Log4J Logging (plus a logging facade that makes dropping logging 
    statements into new classes easier -- at least I think so!)
 
 Before Getting Started
@@ -26,20 +28,13 @@ Getting Started: Eclipse
 ------------------------
 1) Ensure that you have all dependencies installed (see Dependencies)
 2) From Eclipse: 
-    * File > New > Project...
-    * Choose: General > Project
-    * Click 'Next'
-    * Enter the following:
-      - Project Name: proto
-      - Uncheck 'Use Default Location'
-      - Click 'Browse' and browse to the location of the extracted reference
-        project
-    * Click 'Finish'
-    * (At this point the project should be loaded and fully 'aware' of its
-      Java nature and whatnot)
-3) Make sure the Ant View is showing
-4) Add the build.xml file as an ant file.
-5) Run the "war.exploded" target
+    * Switch to the SVN Perspective of your choice (Subclipse, Subversive, etc)
+    * Add this SVN Repository: 
+      http://gwt-spring-hibernate-reference.googlecode.com/svn/trunk
+    * Right-Click 'gwt-spring-hibernate-ant-reference', Choose 'Checkout...'
+      - Under 'Checkout as project in the workspace' enter: gwt-ant
+      - Click 'Finish'
+    * Move along to: "Getting Started: Deploying"
 
 Getting Started: Deploying
 --------------------------
@@ -47,9 +42,12 @@ Getting Started: Deploying
 2) Run the ant-target "war.exploded"
 3) Start Tomcat
 4) Navigate to: http://localhost:8080/proto/
-5) Click the button... you should see some junk to the right about
-   customers in the DB. Go verify that the button adds 'John Doe'
-   to the one and only 'customers' table.
+5) You should see two fields and two buttons. Play around with them.
+   You should be able to add 'customers' to the database and delete
+   them from the UI. There currently is not a lot of work done on the UI. 
+   It is pretty bare-bones. The goal of this project was not a fancy UI,
+   but rather a framework to start from.
+6) Good luck!
 
 Getting Started: Testing
 ------------------------
@@ -63,12 +61,23 @@ system (cobertura) will not be used.
 
 Dependencies
 ------------
-1) A user environment per-user, per-host (see below)
-2) A database (MySQL 5.0.20-standard preferred)
-3) A J2EE Web container (apache-tomcat-5.5.17 preferred)
+1) GWT: Version 1.4.10 (1.4 RC1)
+2) A user environment per-user, per-host (see below)
+3) A database (MySQL 5.0.20-standard preferred)
+4) A J2EE Web container (apache-tomcat-5.5.17 preferred)
+
+GWT - Google Web Toolkit
+------------------------
+Google Web Toolkit must be installed on the build machine you'll be doing
+your development on. At the time of writing this document, GWT 1.4 is used
+and installed at /opt/gwt (symbolic link to) /opt/gwt-mac-1.4.10
+
+You can install GWT in the directory of your choice, but must be sure to
+configure your User Environment (see below) to point to the GWT installation
+location.
 
 User Environments (UE)
------------------
+----------------------
 The ant buildfile assumes that every developer has a different environment
 per user (username), per computer (hostname).
 
