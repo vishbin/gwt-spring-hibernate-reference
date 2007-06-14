@@ -12,7 +12,7 @@ public class CustomerDaoImpl extends HibernateDaoSupport implements CustomerDao{
 
 	public void save(Customer customer) {
 		Log.trace(this, "save(customer="+customer+")");
-		getSession().save(customer);
+		getHibernateTemplate().save(customer);
 	}
 	
 	@SuppressWarnings("unchecked")
