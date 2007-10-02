@@ -79,7 +79,7 @@
 				<dirset dir="${src.java.dir}"/>
 			</classpath>
 		</taskdef>
-		<gwtcompile destdir="${gen.dir}/console" optimize="true">
+		<gwtcompile destdir="${gen.dir}/console" optimize="true" style="${gwt.compile.style}">
 			<fileset dir="${src.java.dir}">
 				<include name="**/*.gwt.xml"/>
 			</fileset>

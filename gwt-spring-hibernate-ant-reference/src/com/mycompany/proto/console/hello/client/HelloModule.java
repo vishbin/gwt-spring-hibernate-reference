@@ -101,6 +101,9 @@ public class HelloModule implements EntryPoint {
 		});
 	}
 	
+	/**
+	 * @gwt.typeArgs customers <com.mycompany.proto.console.hello.client.CustomerAdaptor>
+	 */
 	private void rebuildCustomersTable(List customers) {
 		RootPanel.get("customersTable").clear();
 		FlexTable table = new FlexTable();
