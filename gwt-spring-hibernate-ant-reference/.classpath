@@ -9,6 +9,7 @@
 	<classpathentry kind="lib" path="lib/compile/gwt-user-1.4.60.jar"/>
 	<classpathentry kind="lib" path="lib/runtime/mysql-connector-java-5.0.5-bin.jar"/>
 	<classpathentry kind="lib" path="lib/runtime/gwt-sl-0.1.4.jar"/>
+	<classpathentry kind="lib" path="lib/compile/GWTx-20070605.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="lib" path="lib/spring-2.0.4.jar" sourcepath="/Users/Shared/programming/java/lib/spring-framework-2.0.4/src"/>
 	<classpathentry kind="lib" path="lib/commons-logging-1.1.jar" sourcepath="/Users/Shared/programming/java/lib/commons-logging-1.1/src"/>

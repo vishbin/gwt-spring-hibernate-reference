@@ -8,11 +8,13 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.KeyboardListener;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.mycompany.proto.console.hello.client.log.Log;
 
@@ -23,6 +25,8 @@ public class HelloModule implements EntryPoint {
 	private Button refreshButton = new Button("Refresh");
 	private TextBox firstNameTextBox = new TextBox();
 	private TextBox lastNameTextBox = new TextBox();
+	
+	private DockPanel tableWrapper = new DockPanel();
 	
 	public void onModuleLoad() {
 		Log.setLevelToTrace("com.mycompany.proto.console.hello.client");
@@ -44,12 +48,16 @@ public class HelloModule implements EntryPoint {
 				showCustomers();
 			}
 		});
-
-		RootPanel.get("createCustomerButton").add(createCustomerButton);
-		RootPanel.get("status").add(statusLabel);
-		RootPanel.get("customersRefreshButton").add(refreshButton);
-		RootPanel.get("firstNameTF").add(firstNameTextBox);
-		RootPanel.get("lastNameTF").add(lastNameTextBox);
+		
+		VerticalPanel panel = new VerticalPanel();
+		panel.add(createCustomerButton);
+		panel.add(statusLabel);
+		panel.add(refreshButton);
+		panel.add(firstNameTextBox);
+		panel.add(lastNameTextBox);
+		panel.add(tableWrapper);
+		
+		RootPanel.get().add(panel);
 		
 		//Window.alert("Starting Logging test...");
 		Log.trace(this, "TRACE MESSAGE!");
@@ -117,7 +125,7 @@ public class HelloModule implements EntryPoint {
 	 * @gwt.typeArgs customers <com.mycompany.proto.console.hello.client.CustomerAdaptor>
 	 */
 	private void rebuildCustomersTable(List customers) {
-		RootPanel.get("customersTable").clear();
+		tableWrapper.clear();
 		FlexTable table = new FlexTable();
 		int rows = -1;
 		table.setHTML(++rows, 0, "ID");
@@ -131,7 +139,7 @@ public class HelloModule implements EntryPoint {
 			table.setHTML(rows, 2, customer.getLastName());
 			table.setWidget(rows, 3, new CustomerDeleteButton(customer));
 		}
-		RootPanel.get("customersTable").add(table);
+		tableWrapper.add(table, DockPanel.CENTER);
 	}
 	
 	private class CustomerDeleteButton extends Button {
