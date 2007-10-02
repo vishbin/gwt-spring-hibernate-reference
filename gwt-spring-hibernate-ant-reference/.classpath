@@ -26,5 +26,10 @@
 	<classpathentry kind="lib" path="lib/compile/cobertura-1.8.jar" sourcepath="/Users/Shared/programming/java/lib/cobertura-1.8/src"/>
 	<classpathentry kind="lib" path="lib/runtime/asm-1.5.3.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="GWT_HOME/gwt-user.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

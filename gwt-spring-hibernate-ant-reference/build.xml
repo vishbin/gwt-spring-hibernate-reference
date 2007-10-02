@@ -60,6 +60,8 @@
 		<delete dir="${build.dir}" quiet="true"/>
 		<delete dir=".gwt-cache" quiet="true"/>
 		<delete file="cobertura.ser" quiet="true"/>
+		<delete dir="tomcat/webapps" quiet="true"/>
+		<delete dir="tomcat/work" quiet="true"/>
 	</target>
 	
 	<target name="compile" 
@@ -301,6 +303,30 @@
 			<link offline="true" href="http://java.sun.com/j2se/1.5.0/docs/api/" packagelistLoc="/tmp"/>
 			<link offline="true" href="http://www.hibernate.org/hib_docs/v3/api/" packagelistLoc="/tmp"/>
 		</javadoc>
+	</target>
+	
+	<target name="gwt.configure.shell" depends="merge-templates"
+		description="Configures the development environment to be able to use GWT Hosted Mode.">
+		<mkdir dir="tomcat/webapps/ROOT/WEB-INF"/>
+		<mkdir dir="tomcat/webapps/ROOT/WEB-INF/classes"/>
+		<copy todir="tomcat/webapps/ROOT/WEB-INF" file="conf/gwt/web.xml"/>
+		<copy todir="tomcat/webapps/ROOT/WEB-INF/classes">
+			<fileset dir="${resources.dir}">
+				<include name="**/*.xml" />
+				<exclude name="**/*_template.*" />
+			</fileset>
+			<fileset dir="${conf.gen.dir}"/>
+		</copy>
+		<copy todir="tomcat/webapps/ROOT/WEB-INF">
+			<fileset dir="${gen.dir}/console/WEB-INF">
+				<include name="**/*"/>
+			</fileset>
+			<fileset dir="${console.dir}/WEB-INF">
+				<include name="**/*"/>
+				<exclude name="**/*_template*"/>
+				<exclude name="**/web.xml"/>
+			</fileset>
+		</copy>
 	</target>
 	
 </project>
