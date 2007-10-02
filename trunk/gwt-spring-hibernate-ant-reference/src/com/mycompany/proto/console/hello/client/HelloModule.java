@@ -14,6 +14,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.mycompany.proto.console.hello.client.log.Log;
 
 public class HelloModule implements EntryPoint {
 	
@@ -24,6 +25,7 @@ public class HelloModule implements EntryPoint {
 	private TextBox lastNameTextBox = new TextBox();
 	
 	public void onModuleLoad() {
+		Log.setLevelToTrace("com.mycompany.proto.console.hello.client");
 		firstNameTextBox.setTitle("First Name");
 		firstNameTextBox.setName("firstName");
 		lastNameTextBox.setTitle("Last Name");
@@ -48,6 +50,16 @@ public class HelloModule implements EntryPoint {
 		RootPanel.get("customersRefreshButton").add(refreshButton);
 		RootPanel.get("firstNameTF").add(firstNameTextBox);
 		RootPanel.get("lastNameTF").add(lastNameTextBox);
+		
+		//Window.alert("Starting Logging test...");
+		Log.trace(this, "TRACE MESSAGE!");
+		Log.debug(this, "DEBUG MESSAGE!");
+		Log.info(this, "INFO MESSAGE!");
+		Log.warn(this, "WARN MESSAGE!");
+		Log.error(this, "ERROR MESSAGE!");
+		Log.fatal(this, "FATAL MESSAGE!");
+		Log.fatal(this, "FATAL WITH EXCEPTION", new RuntimeException("Example Runtime Exception!"));
+		//Window.alert("Logging test concluded.");
 		
 		showCustomers();
 	}
