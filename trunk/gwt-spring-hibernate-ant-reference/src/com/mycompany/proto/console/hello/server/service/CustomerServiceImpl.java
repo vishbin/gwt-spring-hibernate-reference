@@ -54,7 +54,7 @@ public class CustomerServiceImpl implements CustomerService {
 		return customerMapper.map(customer);
 	}
 
-	public List getCustomers() throws Exception {
+	public List getCustomers() {
 		return getCustomerAdaptors();
 	}
 }

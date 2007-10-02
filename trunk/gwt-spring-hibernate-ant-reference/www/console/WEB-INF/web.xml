@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<web-app  xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd" version="2.4">
- <context-param>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd" 
+	version="2.4">
+  <context-param>
 	<param-name>contextConfigLocation</param-name>
 	<param-value>
 	    /WEB-INF/applicationContext-jdbc.xml,
 	    /WEB-INF/applicationContext-dao.xml,
+	    
+	    
 		/WEB-INF/applicationContext.xml,
 		/WEB-INF/applicationContext-services.xml
 	</param-value>
@@ -18,22 +23,18 @@
 	<welcome-file>default.htm</welcome-file>
 	<welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
-
   <listener>
 	<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
-
   <servlet>
-	<servlet-name>protoRPCServices</servlet-name>
+	<servlet-name>rpcServices</servlet-name>
 	<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 	<load-on-startup>1</load-on-startup>
   </servlet>
-
   <servlet-mapping>
-	<servlet-name>protoRPCServices</servlet-name>
+	<servlet-name>rpcServices</servlet-name>
 	<url-pattern>/com.mycompany.proto.console.hello.HelloModule/service/*</url-pattern>
   </servlet-mapping>
-
   <mime-mapping>
 	<extension>css</extension>
 	<mime-type>text/css</mime-type>

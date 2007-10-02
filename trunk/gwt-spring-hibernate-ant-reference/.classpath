@@ -6,9 +6,8 @@
 	<classpathentry kind="lib" path="conf/resources"/>
 	<classpathentry kind="lib" path="lib/commons-lang-2.3.jar"/>
 	<classpathentry kind="lib" path="lib/dozer-3.4.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/JVM 1.5.0 (MacOS X Default)"/>
+	<classpathentry kind="lib" path="lib/compile/gwt-user-1.4.60.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
-	<classpathentry kind="lib" path="lib/compile/gwt-user-1.4.10.jar"/>
 	<classpathentry kind="lib" path="lib/spring-2.0.4.jar" sourcepath="/Users/Shared/programming/java/lib/spring-framework-2.0.4/src"/>
 	<classpathentry kind="lib" path="lib/commons-logging-1.1.jar" sourcepath="/Users/Shared/programming/java/lib/commons-logging-1.1/src"/>
 	<classpathentry kind="lib" path="lib/hibernate-commons-annotations-3.3.0.jar"/>
@@ -26,5 +25,6 @@
 	<classpathentry kind="lib" path="lib/test/h2client-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/compile/cobertura-1.8.jar" sourcepath="/Users/Shared/programming/java/lib/cobertura-1.8/src"/>
 	<classpathentry kind="lib" path="lib/runtime/asm-1.5.3.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

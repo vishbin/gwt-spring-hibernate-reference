@@ -10,7 +10,11 @@ public interface CustomerService extends RemoteService {
 	
 	public static final String SERVICE_URI = "service/customerService";
 	
-	List getCustomers() throws Exception;
+	
+	/**
+	 * @gwt.typeArgs <com.mycompany.proto.console.hello.client.CustomerAdaptor>
+	 */
+	List getCustomers();
 	CustomerInterface createCustomer(String firstName, String lastName);
 	void deleteCustomer(CustomerAdaptor customer);
 	
