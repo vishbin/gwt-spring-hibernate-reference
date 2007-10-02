@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="proto" default="compile">
+<project name="proto" default="clean.war.exploded">
 	<description>
 		Prototype GWT + Spring + Hibernate Application
 	</description>
@@ -192,11 +192,6 @@
 				<include name="web.xml" />
 			</fileset>
 		</copy>
-		<copy todir="${console.exploded.dir}/WEB-INF/tld">
-			<fileset dir="${conf.dir}/tld">
-				<include name="**/*"/>
-			</fileset>
-		</copy>
 		<copy todir="${console.exploded.dir}/WEB-INF/classes">
 			<fileset dir="${classes.dir}">
 				<include name="com/mycompany/proto/console/**/*" />
@@ -328,6 +323,9 @@
 			</fileset>
 		</copy>
 	</target>
+	
+	<target name="clean.war.exploded" depends="clean, war.exploded, gwt.configure.shell"
+			description="Clean, Deploy Exploded"/>
 	
 </project>
 
