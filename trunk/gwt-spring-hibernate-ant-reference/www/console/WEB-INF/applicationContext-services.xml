@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
-	<bean id="customerMapper" class="com.mycompany.proto.console.hello.server.service.CustomerMapper" autowire="autodetect"/>
 
+	<bean id="customerMapper" class="com.mycompany.proto.console.hello.server.service.CustomerMapper" autowire="autodetect"/>
 	<bean id="helloService" class="com.mycompany.proto.console.hello.server.service.HelloServiceImpl" autowire="autodetect"/>
 	<bean id="customerService" class="com.mycompany.proto.console.hello.server.service.CustomerServiceImpl" autowire="autodetect"/>
+
 </beans>
