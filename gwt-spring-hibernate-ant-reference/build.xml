@@ -28,6 +28,11 @@
 		<pathelement location="${classes.dir}"/>
 	</path>
 	
+	<path id ="gwt.classpath">
+		<pathelement path="${src.java.dir}"/>
+		<path refid="compile.classpath"/>
+	</path>
+	
 	<path id="runtime.classpath">
 		<fileset dir="${lib.dir}">
 			<include name="*.jar" />
@@ -75,17 +80,16 @@
 				classpathref="compile.classpath">
 			<src path="${src.java.dir}"/>
 		</javac>
-		<taskdef resource="dk/contix/ant/gwt/ant-gwt.xml">
-			<classpath>
-				<path refid="compile.classpath"/>
-				<dirset dir="${src.java.dir}"/>
-			</classpath>
-		</taskdef>
-		<gwtcompile destdir="${gen.dir}/console" optimize="true" style="${gwt.compile.style}">
-			<fileset dir="${src.java.dir}">
-				<include name="**/*.gwt.xml"/>
-			</fileset>
-		</gwtcompile>
+		<java classpathref="gwt.classpath" fork="true" 
+				classname="com.google.gwt.dev.GWTCompiler">
+			<jvmarg line="-Xms256m"/>
+			<jvmarg line="-Xmx1024m"/>
+			<!--<jvmarg line="-XstartOnFirstThread"/>-->
+			<arg line="-logLevel WARN"/>
+			<arg line="-out ${gen.dir}/console"/>
+			<arg line="-style ${gwt.compile.style}"/>
+			<arg line="com.mycompany.proto.console.hello.HelloModule"/>
+		</java>
 		<ant antfile="build-test.xml" target="compile" />
 	</target>
 	
